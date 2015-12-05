@@ -45,9 +45,9 @@ def sending():
             work = re.sub("TLV t*", "TLV: ", work)
 #            work = re.sub(":", "\:", work)
             print work, type(work)
-#            print col
+            print col
             test = str(x)
-            c.execute('INSERT INTO ' + col + ' VALUES (?,?)', (y,work))
+            c.execute('INSERT OR REPLACE INTO ' + col + ' (id, info) VALUES (?,?)', (y,work))
             y += 1
         conn.commit()
 

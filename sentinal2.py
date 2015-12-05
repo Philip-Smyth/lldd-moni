@@ -31,7 +31,7 @@ def scan_host():
     snd="http://127.0.0.1:5000/send"
 
     ### Posting host information
-    payload_host = {"Grunt01": this}
+    payload_host = {"Grunt02": this}
     print payload_host
     print type(payload_host)
     headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
