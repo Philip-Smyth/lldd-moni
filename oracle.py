@@ -4,6 +4,7 @@ from netaddr import iter_iprange
 import socket
 import netifaces as net
 import argparse
+import lense
 
 parser = argparse.ArgumentParser()
 parser.add_argument("range_begin")
@@ -24,23 +25,27 @@ s_net,scrap = host_ip.rsplit(".", 1)
 addresses = list(iter_iprange(str(s_net) +"."+ str(start_range), str(s_net) +"."+ str(end_range)))
 #set counter for active devices
 liveCounter = 0
-
-active_addr = []
+i=1
+active_addr = {}
 for host in addresses:
 	#if(host == addresses.network or host == addresses.broadcast):
 	#	continue
 	resp = sr1(IP(dst=str(host))/ICMP(), timeout=2, verbose=0)
 	if (str(host) == str(host_ip)):
 		print str(host) + " is active(host)"
-		active_addr.append(str(host))
+		active_addr[i]=str(host)
 		liveCounter +=1
+		i+=1
 	elif(str(type(resp)) == "<type 'NoneType'>"):
 		print str(host) + " is dead"
 	elif (int(resp.getlayer(ICMP).type)==3 and int(resp.getlayer(ICMP).code) in [1,2,3,9,10,13]):
 		print str(host) + " is blocking ICMP"
 	else:
 		print str(host) + " is active"
-		active_addr.append(str(host))
+		active_addr[i]=str(host)
+		i+=1
 		liveCounter += 1
 print "From " + str(len(addresses)) + " possible addresses, " + str(liveCounter) + " are active."
 print active_addr
+print liveCounter
+lense.draw_map(liveCounter, active_addr)
