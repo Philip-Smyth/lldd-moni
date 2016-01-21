@@ -25,8 +25,10 @@ s_net,scrap = host_ip.rsplit(".", 1)
 addresses = list(iter_iprange(str(s_net) +"."+ str(start_range), str(s_net) +"."+ str(end_range)))
 #set counter for active devices
 liveCounter = 0
+deadCounter = 0
 i=1
 active_addr = {}
+dead_addr = {}
 for host in addresses:
 	#if(host == addresses.network or host == addresses.broadcast):
 	#	continue
@@ -38,6 +40,9 @@ for host in addresses:
 		i+=1
 	elif(str(type(resp)) == "<type 'NoneType'>"):
 		print str(host) + " is dead"
+		deadCounter += 1
+		dead_addr[i]=str(host)
+		i+=1
 	elif (int(resp.getlayer(ICMP).type)==3 and int(resp.getlayer(ICMP).code) in [1,2,3,9,10,13]):
 		print str(host) + " is blocking ICMP"
 	else:
@@ -45,7 +50,8 @@ for host in addresses:
 		active_addr[i]=str(host)
 		i+=1
 		liveCounter += 1
-print "From " + str(len(addresses)) + " possible addresses, " + str(liveCounter) + " are active."
+#print "From " + str(len(addresses)) + " possible addresses, " + str(liveCounter) + " are active."
 print active_addr
-print liveCounter
-lense.draw_map(liveCounter, active_addr)
+#print deadCounter
+#print liveCounter
+lense.draw_map(liveCounter, deadCounter, active_addr, dead_addr)
