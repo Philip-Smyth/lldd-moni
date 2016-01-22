@@ -6,11 +6,10 @@ import numpy as np
 def draw_map(node_active, node_dead, ips, dead_ips):
 	n = node_active
 	m = node_dead
-	
+	plt.clf()
 	G = nx.star_graph(0)
 	print G.graph
-	for i in range(n):
-		
+	for i in range(n):		
 		G.add_node(i+1, status="active")#
 		G.add_edge(0, i+1)
 
@@ -50,12 +49,11 @@ def draw_map(node_active, node_dead, ips, dead_ips):
 	(largest_hub,degree)=sorted(node_and_degree.items(),key=itemgetter(1))[-1]
 
 	hub_ego=nx.ego_graph(G,largest_hub)
-	pos = nx.spring_layout(hub_ego)
+	pos = nx.circular_layout(hub_ego)
 	
 	posi = None
-	plt.clf()
 
-	posi = nx.spring_layout(G) if posi is None else posi
+	posi = nx.circular_layout(G) if posi is None else posi
 	nx.draw_circular(G, nodelist=subnet_list, font_size=16, node_color="black",with_labels=False)
 	nx.draw_circular(G, nodelist=live_list, font_size=16, node_color="green",with_labels=False)
 	nx.draw_circular(G, nodelist=dead_list, font_size=16, node_color="red",with_labels=False)
