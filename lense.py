@@ -53,14 +53,15 @@ def draw_map(node_active, node_dead, ips, dead_ips):
 	pos = nx.spring_layout(hub_ego)
 	
 	posi = None
+	plt.clf()
 
 	posi = nx.spring_layout(G) if posi is None else posi
-	nx.draw(G, posi, nodelist=subnet_list, font_size=16, node_color="black",with_labels=False)
-	nx.draw(G, posi, nodelist=live_list, font_size=16, node_color="green",with_labels=False)
-	nx.draw(G, posi, nodelist=dead_list, font_size=16, node_color="red",with_labels=False)
+	nx.draw_circular(G, nodelist=subnet_list, font_size=16, node_color="black",with_labels=False)
+	nx.draw_circular(G, nodelist=live_list, font_size=16, node_color="green",with_labels=False)
+	nx.draw_circular(G, nodelist=dead_list, font_size=16, node_color="red",with_labels=False)
 
 	nx.draw_networkx_labels(G, posi, live_labels,font_size=16)
 	nx.draw_networkx_labels(G, posi, dead_labels, font_size=16)
 
 	plt.savefig('test.png')
-	plt.show()
+	plt.show(block=False)
