@@ -5,6 +5,7 @@ import socket
 import netifaces as net
 import argparse
 import lense
+import nmap_recon as recon
 
 parser = argparse.ArgumentParser()
 parser.add_argument("range_begin")
@@ -51,7 +52,9 @@ for i in range(2):
 			i+=1
 			liveCounter += 1
 	#print "From " + str(len(addresses)) + " possible addresses, " + str(liveCounter) + " are active."
+	#	print active_addr[key]
 	print active_addr
+	recon.recon_address(active_addr)
 	#print deadCounter
 	#print liveCounter
-	lense.draw_map(liveCounter, deadCounter, active_addr, dead_addr)
+	#lense.draw_map(liveCounter, deadCounter, active_addr, dead_addr)
