@@ -5,7 +5,7 @@ import socket
 import netifaces as net
 import argparse
 import lense
-import nmap_recon as recon
+#import nmap_recon as recon
 
 parser = argparse.ArgumentParser()
 parser.add_argument("range_begin")
@@ -21,7 +21,7 @@ host_ip = net.ifaddresses('eth0')[2][0]['addr']
 
 # use device address to determine subnet
 s_net,scrap = host_ip.rsplit(".", 1)
-for i in range(2):
+for i in range(5):
 	# use subnet of device and defined range to create address list for iteration
 	addresses = list(iter_iprange(str(s_net) +"."+ str(start_range), str(s_net) +"."+ str(end_range)))
 	#set counter for active devices
@@ -54,7 +54,7 @@ for i in range(2):
 	#print "From " + str(len(addresses)) + " possible addresses, " + str(liveCounter) + " are active."
 	#	print active_addr[key]
 	print active_addr
-	recon.recon_address(active_addr)
+	#recon.recon_address(active_addr)
 	#print deadCounter
 	#print liveCounter
-	#lense.draw_map(liveCounter, deadCounter, active_addr, dead_addr)
+	lense.gen_lense(liveCounter, deadCounter, active_addr, dead_addr)
