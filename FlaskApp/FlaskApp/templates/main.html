@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lan="eng">
+  <head>
+    <meta charset="utf-8">
+    <title>Monitor Dash</title>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+    <meta name = "viewport" content="width=device=width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+    <script type="text/javascript">
+      var canvas, context, img;
+      var x=0,y=0;
+      function timedRefresh(timeoutP)
+      {
+      	canvas = document.getElementById('x');
+      	context = canvas.getContext("2d");
+      	img = new Image();
+      	img.src = "{{ url_for('static', filename='img/map.png') }}" + '?t=' + new Date().getTime();
+      	img.onload = function(){
+          context.drawImage(img, x, y);
+      	  setTimeout("timedRefresh(1000)", timeoutP);
+      	};
+      };
+    </script>
+
+  </head>
+  <body onload="JavaScript:timedRefresh(1000);">
+  	<canvas id="x" width="800" height="600"></canvas>
+  </body>
+</html>
