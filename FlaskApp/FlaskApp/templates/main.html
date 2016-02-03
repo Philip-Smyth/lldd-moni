@@ -22,10 +22,34 @@
       	  setTimeout("timedRefresh(1000)", timeoutP);
       	};
       };
+
+      /*function showData(str) {
+      	if (str == "") {
+      		document.getElementById("txtHint").innerHTML = "";
+      		return;
+      	} else {
+      		if (window.XMLHttpRequest) {
+      			xmlhttp = new XMLHttpRequest();
+      		} else {
+      			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+      		}
+      	    xmlhttp.onreadystatechange = function() {
+      	  	  if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+      	  		document.getElementById("txtHint").innerHTML = xmlhttp.responseText;
+      	  	}
+      	  };
+      	  xmlhttp.open("GET", "{{ url_for('static', filename='getdata.php') }}" + '?q=' + str + '?t=' + new Date().getTime(), true);
+      	  xmlhttp.send();
+      	}
+      }*/
     </script>
 
   </head>
   <body onload="JavaScript:timedRefresh(1000);">
   	<canvas id="x" width="800" height="600"></canvas>
+  	<div>
+  	  {% block body %}
+  	  {% endblock %}
+  	</div>
   </body>
 </html>

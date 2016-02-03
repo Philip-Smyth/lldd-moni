@@ -55,4 +55,4 @@ def recon_address(active_addresses):
         con.commit()
 
 this = {1: '172.26.71.11', 2: '172.26.71.12'}
-recon_address(this)
+#recon_address(this)
