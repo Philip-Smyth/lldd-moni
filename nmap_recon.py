@@ -1,9 +1,11 @@
 # Embedded file name: /home/lab2/lldp-moni/nmap_recon.py
 import nmap
 import MySQLdb as msql
+import spawn
 
 def recon_address(active_addresses):
-    con = msql.connect(host='localhost', user='root', passwd='password', db='discover')
+    host,user,pwd, db = spawn.configRecon()
+    con = msql.connect(host=host, user=user, passwd=pwd, db=db)
     cur = con.cursor()
     check = "SHOW TABLES LIKE 'nodes'"
     cur.execute(check)
@@ -54,5 +56,4 @@ def recon_address(active_addresses):
                             VALUES(%s,%s,%s,%s,%s,%s,%s)""", (hostname,mac_addr,ip_addr,host_os,os_vr,os_type,os_acc))
         con.commit()
 
-this = {1: '172.26.71.11', 2: '172.26.71.12'}
 #recon_address(this)
