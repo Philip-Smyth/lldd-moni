@@ -41,6 +41,9 @@ def draw_map(G, posi, sorted_dict):
 	dead_labels = {}
 	live_list = []
 	dead_list = []
+
+	for p in posi:
+		posi[p][1] += 0.05
 	
 	for key,values in complete_dict.iteritems():
 		if values[1] == "active":

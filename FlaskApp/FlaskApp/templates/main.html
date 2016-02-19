@@ -6,50 +6,62 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
     <meta name = "viewport" content="width=device=width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/center.css') }}">
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 
     <script type="text/javascript">
+//Updating image source to redisplay smoothly, will then 
+//display new changes made to map image
       var canvas, context, img;
       var x=0,y=0;
       function timedRefresh(timeoutP)
-      {
+      {        
       	canvas = document.getElementById('x');
       	context = canvas.getContext("2d");
       	img = new Image();
-      	img.src = "{{ url_for('static', filename='img/map.png') }}" + '?t=' + new Date().getTime();
+        img.src = "{{ url_for('static', filename='img/map.png') }}" + '?t=' + new Date().getTime();
       	img.onload = function(){
-          context.drawImage(img, x, y);
+          context.drawImage(img, x, y);          
       	  setTimeout("timedRefresh(1000)", timeoutP);
       	};
       };
 
-      /*function showData(str) {
-      	if (str == "") {
-      		document.getElementById("txtHint").innerHTML = "";
-      		return;
-      	} else {
-      		if (window.XMLHttpRequest) {
-      			xmlhttp = new XMLHttpRequest();
-      		} else {
-      			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-      		}
-      	    xmlhttp.onreadystatechange = function() {
-      	  	  if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-      	  		document.getElementById("txtHint").innerHTML = xmlhttp.responseText;
-      	  	}
-      	  };
-      	  xmlhttp.open("GET", "{{ url_for('static', filename='getdata.php') }}" + '?q=' + str + '?t=' + new Date().getTime(), true);
-      	  xmlhttp.send();
-      	}
-      }*/
-    </script>
+      function tableRefresh(timeoutP)
+      {
+        table = document.getElementById("node-data");
+        table.refresh();
+      };
+//Node info table being updated and redisplayed as a data stream
+      $(document).ready(
+        function(){
+        sse = new EventSource('/my_event_source');
+        
+        sse.onmessage = function(message){
+          $('#node-data').empty();     
+          that = message.data;
+          console.log("Message: " + that);
 
+          var obj = JSON.parse(that);
+          that = that.replace(/\\/g,"");                  
+          var row = "";
+          row += "<tr class='info'><th>ID</th><th>Hostname</th><th>MAC Address</th><th>IP Address</th><th>OS</th><th>OS Version</th><th>OS Type</th><th>OS Accuracy</th></tr>";
+          for (var node in obj){
+            row += "<tr>";
+            for (var values in obj[node]){
+              row += "<td>" + obj[node][values] + "</td>";
+            }
+            row += "</tr>";            
+          }
+          $('#node-data').append('<table id="table" class="table table-bordered"></table>')
+          $('#table').append(row);
+        }
+      });
+    </script>
   </head>
-  <body onload="JavaScript:timedRefresh(1000);">
-  	<canvas id="x" width="800" height="600"></canvas>
-  	<div>
-  	  {% block body %}
-  	  {% endblock %}
-  	</div>
+  <body onload="JavaScript:timedRefresh(1000);tableRefresh(1000);">
+  	<div id="container">
+      <canvas id="x" width="800" height="600"></canvas>    
+  	  <div id="node-data" class="container"></div>
+    </div>
   </body>
 </html>

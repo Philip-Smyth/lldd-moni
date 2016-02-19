@@ -1,0 +1,12 @@
+body{
+	text-align: center;
+}
+table{
+	font-size: 16px;
+}
+table tr th{
+	padding: 3px;
+}
+table tr td{
+	padding: 3px;
+}
