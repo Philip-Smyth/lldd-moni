@@ -17,22 +17,38 @@ def recon_address(active_addresses):
     for key, value in active_addresses.iteritems():
         print 'Value: ' + str(value)
         nm = nmap.PortScanner()
-        this = nm.scan(value, '22-443', arguments='-n -O')
+        this = nm.scan(value, '22-443', arguments='n -O')
         os_list = [ (x, nm[x]) for x in nm.all_hosts() ]
         print nm.command_line()
         print nm[value].has_tcp(80)
         print nm.csv()
-        print this
+        print "DIS RITE HERE"
+        print os_list
         for host, os in os_list:
-            host_os = os['osclass']['osfamily']
+            try:
+                host_os = os['osclass']['osfamily']
+            except KeyError as e:
+                host_os = "null" 
             print 'OS: ' + str(host_os)
-            os_vr = os['osclass']['osgen']
+            try:
+                os_vr = os['osclass']['osgen']
+            except KeyError as e:
+                os_vr = "null"
             print 'Version: ' + str(os_vr)
-            os_type = os['osclass']['type']
+            try:
+                os_type = os['osclass']['type']
+            except KeyError as e:
+                os_type = "null"
             print 'Type: ' + str(os_type)
-            os_acc = os['osclass']['accuracy']
+            try:
+                os_acc = os['osclass']['accuracy']
+            except KeyError as e:
+                os_acc = "0"
             print 'Accuracy: ' + str(os_acc) + '%'
-            hostname = os['hostname']
+            try:
+                hostname = os['hostname']
+            except KeyError as e:
+                hostname = ""
             print 'Hostname: ' + str(hostname)
             try:
                 mac_addr = os['addresses']['mac']

@@ -106,6 +106,5 @@ def gen_lense(node_active, node_dead, ips, dead_ips):
 	posi = None
 	posi = nx.circular_layout(G) if posi is None else posi
 	nx.draw_circular(G, nodelist=subnet_list, font_size=16, node_color="black",with_labels=False)
-	draw_map(G, posi, complete_dict)
+        draw_map(G, posi, complete_dict)
 	plt.savefig('/var/www/FlaskApp/FlaskApp/static/img/map.png')
-	#plt.show(block=False)
