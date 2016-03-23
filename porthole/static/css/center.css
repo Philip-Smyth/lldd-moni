@@ -1,0 +1,15 @@
+body{
+	text-align: center;
+}
+table{
+	font-size: 10px;
+}
+table tr th{
+	padding: 1px;
+}
+table tr td{
+	padding: 1px;
+}
+.scroll{
+	overflow: scroll;
+}

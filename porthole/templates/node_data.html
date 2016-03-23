@@ -1,0 +1,22 @@
+{% extends "main.html" %}
+{% block body%}
+    <table style="width:100%">
+     <tr>
+       <th>ID</th>
+       <th>Hostname</th>
+       <th>MAC Address</th>
+       <th>IP Address</th>
+       <th>OS</th>
+       <th>OS Version</th>
+       <th>OS Type</th>
+       <th>OS Accuracy</th>
+     </tr>
+     {% for i in data %}
+       <tr>
+       {% for x in i %}
+         <td>{{x}}</td>
+       {% endfor %}
+       </tr>
+     {% endfor %}
+    </table>
+{% endblock %}

@@ -22,7 +22,6 @@ def recon_address(active_addresses):
         print nm.command_line()
         print nm[value].has_tcp(80)
         print nm.csv()
-        print "DIS RITE HERE"
         print os_list
         for host, os in os_list:
             try:
@@ -71,5 +70,3 @@ def recon_address(active_addresses):
                 cur.execute("""INSERT INTO nodes (Hostname, MAC_Addr, IP_Addr, OS, OS_Vrs, OS_Type, OS_Acc) 
                             VALUES(%s,%s,%s,%s,%s,%s,%s)""", (hostname,mac_addr,ip_addr,host_os,os_vr,os_type,os_acc))
         con.commit()
-
-#recon_address(this)

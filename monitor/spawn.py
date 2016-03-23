@@ -8,7 +8,7 @@ def readConfig(header, value):
 	conf_val = conf_val.strip('"')
 	return conf_val
 
-def configOracle():
+def configScout():
 	min_range = readConfig("network", "min_range")
 	max_range = readConfig("network", "max_range")
 	return min_range, max_range

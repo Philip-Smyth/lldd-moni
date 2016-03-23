@@ -4,16 +4,9 @@ from netaddr import iter_iprange
 import socket
 import netifaces as net
 import argparse
-import lense
-import nmap_recon as recon
-
-parser = argparse.ArgumentParser()
-parser.add_argument("range_begin")
-parser.add_argument("range_end")
-
-args = parser.parse_args()
-start_range = args.range_begin
-end_range = args.range_end
+import map_gen
+import recon
+import threading
 
 def monitor_network(min_range, max_range):
 	#get ip of this device
@@ -22,13 +15,16 @@ def monitor_network(min_range, max_range):
 
 	# use device address to determine subnet
 	s_net,scrap = host_ip.rsplit(".", 1)
-	for i in range(5):
+	##### Iterate the process 4 times
+	# TODO need to make this iterative for deamon
+
+	while True:
 		# use subnet of device and defined range to create address list for iteration
-		addresses = list(iter_iprange(str(s_net) +"."+ str(start_range), str(s_net) +"."+ str(end_range)))
+		addresses = list(iter_iprange(str(s_net) +"."+ str(min_range), str(s_net) +"."+ str(max_range)))
 		#set counter for active devices
 		liveCounter = 0
 		deadCounter = 0
-		i=1
+		i=0
 		active_addr = {}
 		dead_addr = {}
 		for host in addresses:
@@ -50,14 +46,8 @@ def monitor_network(min_range, max_range):
 				active_addr[i]=str(host)
 				i+=1
 				liveCounter += 1
-		#print "From " + str(len(addresses)) + " possible addresses, " + str(liveCounter) + " are active."
-		#print active_addr[key]
-		#print deadCounter
-		#print liveCounter
 		print active_addr
-		recon.recon_address(active_addr)
-		
-		lense.gen_lense(liveCounter, deadCounter, active_addr, dead_addr)
-
-
-monitor_network(start_range, end_range)
+		rec = threading.Thread(target=recon.recon_address(active_addr))
+		rec.start()
+		gen = threading.Thread(target=map_gen.gen_lense(liveCounter, deadCounter, active_addr, dead_addr))
+		gen.start()

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Lense</title>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+    <script src="//d3js.org/d3.v3.min.js"></script>>
+    <meta name = "viewport" content="width=device=width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/center.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="{{ url_for('static', filename='css/sb-admin.css') }}" rel="stylesheet">
+
+    <!-- Morris Charts CSS -->
+    <link href="{{ url_for('static', filename='css/plugins/morris.css') }}" rel="stylesheet">
+
+    <!--Tree CSS-->
+    <link href="{{ url_for('static', filename='css/node-tree.css') }}" rel="stylesheet">
+
+    <script type="text/javascript">
+    var canvas, context, img;
+      var x=0,y=0;
+      function timedRefresh(timeoutP)
+      {
+        canvas = document.getElementById('x');
+        context = canvas.getContext("2d");
+        img = new Image();
+        img.src = "{{ url_for('static', filename='img/map.png') }}" + '?t=' + new Date().getTime();
+        img.onload = function()
+        {
+          context.drawImage(img, x, y);
+          setTimeout("timedRefresh(1000)", timeoutP);
+        };
+      };
+      function tableRefresh(timeoutP)
+      {
+        table = document.getElementById("node-data");
+        table.refresh();
+      };
+//Node info table being updated and redisplayed as a data stream
+      $(document).ready(
+        function()
+        {
+          sse = new EventSource('/my_event_source');
+          sse.onmessage = function(message)
+          {
+            $('#node-data').empty();
+            that = message.data;
+            console.log("Message: " + that);
+
+            var obj = JSON.parse(that);
+            that = that.replace(/\\/g,"");
+            var row = "";
+            row += "<tr class='info'><th>ID</th><th>Hostname</th><th>MAC Address</th><th>IP Address</th><th>OS</th><th>OS Version</th><th>OS Type</th><th>OS Accuracy</th></tr>";
+            for (var node in obj)
+            {
+              row += "<tr>";
+              for (var values in obj[node])
+              {
+                row += "<td>" + obj[node][values] + "</td>";
+              }
+              row += "</tr>";
+            }
+            $('#node-data').append('<table id="table" class="table table-bordered"></table>')
+            $('#table').append(row);
+          }
+        }
+       );
+    </script>
+    <script type="text/javascript">
+    $(document).ready(
+    	function()
+        {
+    		$('#new_page').on('click', function(e)
+            {
+    			window.open('/network_map', '_blank');
+    		});
+        }
+    );
+    </script>
+</head>
+
+<body onload="JavaScript:timedRefresh(1000);tableRefresh(1000);">
+    <div id="page-wrapper">
+        <div class="container-fluid">
+        <!-- Page Heading -->
+            <div class="row">
+                <div class="col-lg-12">
+                <h1 class="page-header">
+                    Dashboard <small>Statistics Overview</small>
+                </h1>
+                </div>
+            </div>
+            <a href="#" id="new_page" class="btn btn-warning" role="button">Interactive Map</a>
+            <div class="col-lg-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><i class="fa fa-money fa-fw"></i> Transactions Panel</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <canvas id="x" width="800" height="600"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>            
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="panel panel-default scroll">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><i class="fa fa-long-arrow-right fa-fw"></i>OS Information</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="table-responsive">
+                                 <div id="node-data" class="container">Collecting Data...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-comments fa-5x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="huge">26</div>
+                                    <div>New Comments!</div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="#">
+                            <div class="panel-footer">
+                                <span class="pull-left">View Details</span>
+                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                <div class="clearfix"></div>
+                            </div>
+                            </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-green">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-tasks fa-5x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="huge">12</div>
+                                    <div>New Tasks!</div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="#">
+                        <div class="panel-footer">
+                            <span class="pull-left">View Details</span>
+                            <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                            <div class="clearfix"></div>
+                        </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-yellow">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-shopping-cart fa-5x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="huge">124</div>
+                                    <div>New Orders!</div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="#">
+                        <div class="panel-footer">
+                            <span class="pull-left">View Details</span>
+                            <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                            <div class="clearfix"></div>
+                        </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-red">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-support fa-5x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="huge">13</div>
+                                    <div>Support Tickets!</div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="#">
+                        <div class="panel-footer">
+                            <span class="pull-left">View Details</span>
+                            <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                            <div class="clearfix"></div>
+                        </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+    </div>
+    <!-- /#page-wrapper -->
+</body>
+</html>
