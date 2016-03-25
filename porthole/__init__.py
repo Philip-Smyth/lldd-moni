@@ -9,12 +9,7 @@ import collections, json
 from json import loads, dumps
 
 app = fl(__name__)
-
-def collect_and_sort():
-	node_data = collect_db_data()
-	sort_db_data(node_data)
-
-def collect_db_data():
+def collect():
     con = msql.connect(host='localhost', user='root', passwd='password', db='discover')
     cur = con.cursor()
     check = "SHOW TABLES LIKE 'nodes'"
@@ -28,8 +23,9 @@ def collect_db_data():
     node_data = cur.fetchall()
     return node_data
 
-def sort_db_data(node_data):
-	dictionary = collections.OrderedDict()
+def collect_and_sort():    
+    node_data = collect()
+    dictionary = collections.OrderedDict()
     dt={}   
     count = 0
     while True:
@@ -67,13 +63,11 @@ def sort_db_data(node_data):
         count += 1
 
 def table_data():
-    yield collect_and_sort()
+    raw_data = collect_and_sort()
+    yield raw_data
 
 def interactive_map_data():
     raw_data=collect_and_sort()
-    #print "THIS RIGHT ERE!!!"
-    #print data
-    #print type(data)
     cut_data = raw_data[6:]
     data = eval(cut_data)
     initial_json = {'name':'network','children': [{}]}
@@ -99,7 +93,6 @@ def write_to_file(data):
     final_data = repped_data.replace("'",'"')
     f.write(final_data)
     f.close()
-
 
 @app.route('/my_event_source')
 def sse_request():
